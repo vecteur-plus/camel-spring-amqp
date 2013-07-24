@@ -69,7 +69,17 @@ public class SpringAMQPHeader {
     
     public static Message copyHeaders(Message msg, Map<String, Object> headers) {
         for(Map.Entry<String, Object> headerEntry : headers.entrySet()) {
-            if( !MESSAGE_ID.equals(headerEntry.getKey()) &&
+
+            // headers used for setting basic properties and routing key are skipped
+            if( !CONTENT_ENCODING.equals(headerEntry.getKey()) &&
+                    !CONTENT_TYPE.equals(headerEntry.getKey()) &&
+                    !MESSAGE_ID.equals(headerEntry.getKey()) &&
+                    !CORRELATION_ID.equals(headerEntry.getKey()) &&
+                    !EXPIRATION.equals(headerEntry.getKey()) &&
+                    !PRIORITY.equals(headerEntry.getKey()) &&
+                    !REPLY_TO.equals(headerEntry.getKey()) &&
+                    !TYPE.equals(headerEntry.getKey()) &&
+                    !SpringAMQPComponent.ROUTING_KEY_HEADER.equals(headerEntry.getKey()) &&
                     !msg.getMessageProperties().getHeaders().containsKey(headerEntry.getKey())) {
                 msg.getMessageProperties().setHeader(headerEntry.getKey(), headerEntry.getValue());
             }
