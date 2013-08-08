@@ -80,6 +80,7 @@ public class SpringAMQPHeader {
                     !REPLY_TO.equals(headerEntry.getKey()) &&
                     !TYPE.equals(headerEntry.getKey()) &&
                     !SpringAMQPComponent.ROUTING_KEY_HEADER.equals(headerEntry.getKey()) &&
+                    !SpringAMQPComponent.EXCHANGE_NAME_HEADER.equals(headerEntry.getKey()) &&
                     !msg.getMessageProperties().getHeaders().containsKey(headerEntry.getKey())) {
                 msg.getMessageProperties().setHeader(headerEntry.getKey(), headerEntry.getValue());
             }
