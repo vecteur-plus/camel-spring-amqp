@@ -10,9 +10,9 @@
         <version>7</version>
     </parent>
     
-    <groupId>com.bluelock</groupId>
+    <groupId>cz.drasil</groupId>
     <artifactId>camel-spring-amqp</artifactId>
-    <version>1.6.4-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <name>Camel :: Spring-AMQP</name>

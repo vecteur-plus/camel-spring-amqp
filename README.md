@@ -132,13 +132,14 @@ the XStream JSON message converter will be used.
 
 ## Downloads and Maven Repository
 
-Release builds of the Camel Spring AMQP Component are hosted within [the Sonatype repository](https://oss.sonatype.org/index.html). 
-You can include this component within your Maven POM as:
+Release builds of this modified Camel Spring AMQP Component are not hosted within any public Maven repository.
+You need to download sources here and run 'mvn install -Dmaven.test.skip=true' to build the project and install
+the binaries into the local repository. Then you can include this component within your Maven POM as:
 
 	<dependency>
-	    <groupId>com.bluelock</groupId>
+	    <groupId>cz.drasil</groupId>
 	    <artifactId>camel-spring-amqp</artifactId>
-	    <version>1.6.4-SNAPSHOT</version>
+	    <version>1.0</version>
 	</dependency>
 
 ## Limitations
@@ -146,10 +147,6 @@ You can include this component within your Maven POM as:
  - Transactions are currently not supported
  - Lifecycle events (e.g. stop, shutdown) need to be refined
  - Unit tests require a running AMQP broker. I may end up creating a VM local Qpid instance as an AMQP broker...
-
-## To-Do
-
- - Validate with other AMQP brokers (such as Qpid)
 
 ## License
 
