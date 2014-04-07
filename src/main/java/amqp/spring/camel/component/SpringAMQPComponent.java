@@ -74,12 +74,6 @@ public class SpringAMQPComponent extends DefaultComponent {
         return connectionFactory;
     }
 
-    @Deprecated
-    public void setConnectionFactory(ConnectionFactory connectionFactory) {
-        this.connectionFactory = new HashMap<String, ConnectionFactory>();
-        this.connectionFactory.put(DEFAULT_CONNECTION, connectionFactory);
-    }
-
     public void setConnectionFactory(Map<String, ConnectionFactory> connectionFactory) {
         this.connectionFactory = connectionFactory;
     }
@@ -113,12 +107,6 @@ public class SpringAMQPComponent extends DefaultComponent {
         return this.amqpAdministration;
     }
 
-    @Deprecated
-    public void setAmqpAdministration(AmqpAdmin amqpAdministration) {
-        this.amqpAdministration = new HashMap<String, AmqpAdmin>(1);
-        this.amqpAdministration.put(DEFAULT_CONNECTION, amqpAdministration);
-    }
-
     public void setAmqpAdministration(Map<String, AmqpAdmin> amqpAdministration) {
         this.amqpAdministration = amqpAdministration;
     }
@@ -150,12 +138,6 @@ public class SpringAMQPComponent extends DefaultComponent {
         }
         
         return this.amqpTemplate;
-    }
-
-    @Deprecated
-    public void setAmqpTemplate(AmqpTemplate amqpTemplate) {
-        this.amqpTemplate = new HashMap<String, AmqpTemplate>(1);
-        this.amqpTemplate.put(DEFAULT_CONNECTION, amqpTemplate);
     }
 
     public void setAmqpTemplate(Map<String, AmqpTemplate> amqpTemplate) {
