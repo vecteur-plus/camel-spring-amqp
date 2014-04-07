@@ -46,7 +46,7 @@ public class SpringAMQPConsumer extends DefaultConsumer implements ConnectionLis
     private static final String HA_POLICY_ARGUMENT = "x-ha-policy";
 
     protected SpringAMQPEndpoint endpoint;
-    private RabbitMQMessageListener messageListener;
+    private final RabbitMQMessageListener messageListener;
 
     public SpringAMQPConsumer(SpringAMQPEndpoint endpoint, Processor processor) {
         super(endpoint, processor);
@@ -67,7 +67,7 @@ public class SpringAMQPConsumer extends DefaultConsumer implements ConnectionLis
         this.messageListener.shutdown();
         super.shutdown();
     }
-    
+
     protected static Map<String, Object> parseKeyValues(String routingKey) {
         StringTokenizer tokenizer = new StringTokenizer(routingKey, "&|");
         Map<String, Object> pairs = new HashMap<String, Object>();
@@ -96,9 +96,9 @@ public class SpringAMQPConsumer extends DefaultConsumer implements ConnectionLis
     }
     
     //We have to ask the RabbitMQ Template for converters, the interface doesn't have a way to get MessageConverter
-    class RabbitMQMessageListener implements MessageListener {
+    private class RabbitMQMessageListener implements MessageListener {
         private MessageConverter msgConverter;
-        private SimpleMessageListenerContainer listenerContainer;
+        private final SimpleMessageListenerContainer listenerContainer;
         private static final long DEFAULT_TIMEOUT_MILLIS = 1000;
 
         public RabbitMQMessageListener(SpringAMQPEndpoint endpoint) {
@@ -256,8 +256,8 @@ public class SpringAMQPConsumer extends DefaultConsumer implements ConnectionLis
      * fields that are private without any getters, so subclassing either class fails to
      * provide access to needed functionality.
      */
-    class SpringAMQPExecutor extends SimpleAsyncTaskExecutor {
-        private SpringAMQPEndpoint endpoint;
+    private class SpringAMQPExecutor extends SimpleAsyncTaskExecutor {
+        private final SpringAMQPEndpoint endpoint;
 
         SpringAMQPExecutor(SpringAMQPEndpoint endpoint) {
             this.endpoint = endpoint;
@@ -277,9 +277,9 @@ public class SpringAMQPConsumer extends DefaultConsumer implements ConnectionLis
 
     }
 
-    class SpringAMQPExecutorTask implements Runnable {
-        private SpringAMQPEndpoint endpoint;
-        private Runnable delegateTask;
+    private class SpringAMQPExecutorTask implements Runnable {
+        private final SpringAMQPEndpoint endpoint;
+        private final Runnable delegateTask;
 
         // Retry every 30 seconds upon error
         public static final long RECOVERY_INTERVAL_MILLISECONDS = 30000L;
