@@ -4,6 +4,7 @@
 
 package amqp.spring.camel.component;
 
+import com.rabbitmq.client.Channel;
 import org.aopalliance.aop.Advice;
 import org.apache.camel.Exchange;
 import org.apache.camel.ExchangePattern;
@@ -14,17 +15,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.AmqpConnectException;
 import org.springframework.amqp.AmqpIOException;
+import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.core.Address;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.HeadersExchange;
 import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageListener;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.config.StatefulRetryOperationsInterceptorFactoryBean;
 import org.springframework.amqp.rabbit.connection.Connection;
 import org.springframework.amqp.rabbit.connection.ConnectionListener;
+import org.springframework.amqp.rabbit.core.ChannelAwareMessageListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.retry.MessageKeyGenerator;
@@ -68,6 +70,12 @@ public class SpringAMQPConsumer extends DefaultConsumer implements ConnectionLis
         super.shutdown();
     }
 
+    @Override
+    public void doStop() throws Exception {
+        this.messageListener.shutdown();
+        super.doStop();
+    }
+    
     protected static Map<String, Object> parseKeyValues(String routingKey) {
         StringTokenizer tokenizer = new StringTokenizer(routingKey, "&|");
         Map<String, Object> pairs = new HashMap<String, Object>();
@@ -96,7 +104,7 @@ public class SpringAMQPConsumer extends DefaultConsumer implements ConnectionLis
     }
     
     //We have to ask the RabbitMQ Template for converters, the interface doesn't have a way to get MessageConverter
-    private class RabbitMQMessageListener implements MessageListener {
+    private class RabbitMQMessageListener implements ChannelAwareMessageListener {
         private MessageConverter msgConverter;
         private final SimpleMessageListenerContainer listenerContainer;
         private static final long DEFAULT_TIMEOUT_MILLIS = 1000;
@@ -178,7 +186,7 @@ public class SpringAMQPConsumer extends DefaultConsumer implements ConnectionLis
         }
 
         @Override
-        public void onMessage(Message amqpMessage) {
+        public void onMessage(Message amqpMessage, Channel channel) {
             if(this.msgConverter == null)
                 throw new IllegalStateException("No message converter present - cannot processs messages!");
             
@@ -190,6 +198,12 @@ public class SpringAMQPConsumer extends DefaultConsumer implements ConnectionLis
             
             try {
                 getProcessor().process(exchange);
+
+                if (endpoint.getAcknowledgeMode() == AcknowledgeMode.MANUAL) {
+                    long deliveryTag = amqpMessage.getMessageProperties().getDeliveryTag();
+                    LOG.trace("Acknowledging receipt [delivery_tag={}]", deliveryTag);
+                    channel.basicAck(deliveryTag, false);
+                }
             } catch(Throwable t) {
                 exchange.setException(t);
             }
@@ -309,7 +323,7 @@ public class SpringAMQPConsumer extends DefaultConsumer implements ConnectionLis
                         throw new IllegalStateException("Unrecoverable interruption on consumer restart");
                     }
                 }
-            } while (error);
+            } while (error && !endpoint.isStoppingOrStopped());
         }
 
         protected void declareAMQPEntities() {
