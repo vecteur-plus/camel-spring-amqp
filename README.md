@@ -66,7 +66,7 @@ Parameters available include:
     </tr>
     <tr>
         <td>durable</td>
-        <td>Make messages being produced from this endpoint persistent</td>
+        <td>Make queues and exchanges created by this endpoint persistent</td>
     </tr>
     <tr>
         <td>type</td>
