@@ -5,12 +5,12 @@ package amqp.spring.camel.component;
 
 import java.util.HashMap;
 import java.util.Map;
-import junit.framework.Assert;
 import org.apache.camel.*;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.impl.JndiRegistry;
 import org.apache.camel.test.junit4.CamelTestSupport;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
