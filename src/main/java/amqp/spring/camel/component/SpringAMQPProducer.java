@@ -64,23 +64,25 @@ public class SpringAMQPProducer extends DefaultAsyncProducer implements ServiceP
     public void doStart() throws Exception {
         super.doStart();
         
-        org.springframework.amqp.core.Exchange exchange = this.endpoint.createAMQPExchange();
-        if (this.endpoint.isUsingDefaultExchange()) {
-            LOG.info("Using default exchange of type {}", exchange.getClass().getSimpleName());
-        } else {
-            LOG.info("Declaring exchange {} of type {}", exchange.getName(), exchange.getClass().getSimpleName());
-            try {
-                this.endpoint.amqpAdministration.declareExchange(exchange);
-            } catch(AmqpIOException e) {
-                //The actual reason for failed exceptions is often swallowed up by Camel or Spring, find it
-                Throwable rootCause = SpringAMQPComponent.findRootCause(e);
-                LOG.error("Could not initialize exchange!", rootCause);
-                throw e;
-            } catch (AmqpConnectException e) {
-                LOG.error("Producer cannot connect to broker - stopping endpoint {}", this.endpoint.toString(), e);
-                stop();
-                this.endpoint.stop();
-                return;
+        if (this.endpoint.isCreateResources()) {
+            org.springframework.amqp.core.Exchange exchange = this.endpoint.createAMQPExchange();
+            if (this.endpoint.isUsingDefaultExchange()) {
+                LOG.info("Using default exchange of type {}", exchange.getClass().getSimpleName());
+            } else {
+                LOG.info("Declaring exchange {} of type {}", exchange.getName(), exchange.getClass().getSimpleName());
+                try {
+                    this.endpoint.amqpAdministration.declareExchange(exchange);
+                } catch(AmqpIOException e) {
+                    //The actual reason for failed exceptions is often swallowed up by Camel or Spring, find it
+                    Throwable rootCause = SpringAMQPComponent.findRootCause(e);
+                    LOG.error("Could not initialize exchange!", rootCause);
+                    throw e;
+                } catch (AmqpConnectException e) {
+                    LOG.error("Producer cannot connect to broker - stopping endpoint {}", this.endpoint.toString(), e);
+                    stop();
+                    this.endpoint.stop();
+                    return;
+                }
             }
         }
 

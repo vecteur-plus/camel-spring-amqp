@@ -88,6 +88,10 @@ Parameters available include:
         <td>autoReply</td>
         <td>Consumer sends back a response message when ReplyTo header is present in the consumed message. Defaults to true.</td>
     </tr>
+    <tr>
+        <td>createResources</td>
+        <td>Setting this parameter to false prevents producers and consumers from creating the AMQP resources (queues, exchanges and binding) they are using. Defaults to true.</td>
+    </tr>
 </table>
 
 ## Spring Integration

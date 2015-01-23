@@ -312,7 +312,9 @@ public class SpringAMQPConsumer extends DefaultConsumer implements ConnectionLis
             do {
                 try {
                     error = false;
-                    declareAMQPEntities();
+                    if ( this.endpoint.isCreateResources() ) {
+                        declareAMQPEntities();
+                    }
                     delegateTask.run();
                 } catch (Exception e) {
                     error = true;

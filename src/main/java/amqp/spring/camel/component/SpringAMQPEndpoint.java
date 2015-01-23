@@ -51,6 +51,7 @@ public class SpringAMQPEndpoint extends DefaultEndpoint {
     private int prefetchCount = 1;
     private Integer timeToLive = null;
     private AcknowledgeMode acknowledgeMode = AcknowledgeMode.NONE;
+    private boolean createResources = true;
     
     //The second and third parameters to the URI can be interchangable based on the context.
     //Place them here until we determine if we're a consumer or producer.
@@ -255,6 +256,14 @@ public class SpringAMQPEndpoint extends DefaultEndpoint {
     public void setTimeToLive(Integer timeToLive) {
         this.timeToLive = timeToLive;
     }
+    
+    public boolean isCreateResources() {
+        return createResources;
+    }
+
+    public void setCreateResources(boolean createResources) {
+        this.createResources = createResources;
+    }
 
     @Override
     public boolean isSingleton() {
@@ -277,6 +286,7 @@ public class SpringAMQPEndpoint extends DefaultEndpoint {
         if ( this.ha )
         	builder.append("&x-ha-policy=all");
         builder.append("&autoReply=").append(this.autoReply);
+        builder.append("&createResources=").append(this.createResources);
         
         return builder.toString();        
     }
