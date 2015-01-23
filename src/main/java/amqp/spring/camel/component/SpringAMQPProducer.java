@@ -21,7 +21,7 @@ import org.springframework.amqp.support.converter.SimpleMessageConverter;
 public class SpringAMQPProducer extends DefaultAsyncProducer {
     private static transient final Logger LOG = LoggerFactory.getLogger(SpringAMQPProducer.class);
     
-    protected SpringAMQPEndpoint endpoint;
+    private final SpringAMQPEndpoint endpoint;
     private ExecutorService threadPool;
     
     public SpringAMQPProducer(SpringAMQPEndpoint endpoint) {

@@ -21,9 +21,9 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 public class SpringAMQPComponent extends DefaultComponent {
     private static transient final Logger LOG = LoggerFactory.getLogger(SpringAMQPComponent.class);
     
-    protected Map<String, ConnectionFactory> connectionFactory;
-    protected Map<String, AmqpTemplate> amqpTemplate;
-    protected Map<String, AmqpAdmin> amqpAdministration;
+    private Map<String, ConnectionFactory> connectionFactory;
+    private Map<String, AmqpTemplate> amqpTemplate;
+    private Map<String, AmqpAdmin> amqpAdministration;
     public static final String ROUTING_KEY_HEADER = "ROUTING_KEY";
     public static final String DEFAULT_CONNECTION = "DefaultConnection";
     public static final String CONNECTION = "connection";

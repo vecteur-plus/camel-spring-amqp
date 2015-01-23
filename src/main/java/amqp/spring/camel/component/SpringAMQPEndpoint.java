@@ -34,23 +34,23 @@ public class SpringAMQPEndpoint extends DefaultEndpoint {
     private static final String DEFAULT_EXCHANGE_NAME = "";
     
     protected AmqpAdmin amqpAdministration;
-    protected AmqpTemplate amqpTemplate;
+    private AmqpTemplate amqpTemplate;
             
-    String connection;
-    String exchangeName;
-    String queueName;
-    String routingKey;
-    String exchangeType;
-    boolean durable = false;
-    boolean exclusive = false;
-    boolean autodelete = true;
-    boolean transactional = false;
-    boolean ha = false;
-    boolean autoReply = true;
-    int concurrentConsumers = 1;
-    int prefetchCount = 1;
-    Integer timeToLive = null;
-    AcknowledgeMode acknowledgeMode = AcknowledgeMode.NONE;
+    private String connection;
+    private String exchangeName;
+    private String queueName;
+    private String routingKey;
+    private String exchangeType;
+    private boolean durable = false;
+    private boolean exclusive = false;
+    private boolean autodelete = true;
+    private boolean transactional = false;
+    private boolean ha = false;
+    private boolean autoReply = true;
+    private int concurrentConsumers = 1;
+    private int prefetchCount = 1;
+    private Integer timeToLive = null;
+    private AcknowledgeMode acknowledgeMode = AcknowledgeMode.NONE;
     
     //The second and third parameters to the URI can be interchangable based on the context.
     //Place them here until we determine if we're a consumer or producer.

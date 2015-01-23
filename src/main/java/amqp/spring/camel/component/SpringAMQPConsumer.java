@@ -47,7 +47,7 @@ public class SpringAMQPConsumer extends DefaultConsumer implements ConnectionLis
     private static final String TTL_QUEUE_ARGUMENT = "x-message-ttl";
     private static final String HA_POLICY_ARGUMENT = "x-ha-policy";
 
-    protected SpringAMQPEndpoint endpoint;
+    private final SpringAMQPEndpoint endpoint;
     private final RabbitMQMessageListener messageListener;
 
     public SpringAMQPConsumer(SpringAMQPEndpoint endpoint, Processor processor) {
