@@ -35,6 +35,11 @@
 
     <developers>
         <developer>
+          <id>meydrew</id>
+          <name>Andrew Meyerhoff</name>
+          <email>ameyerhoff@bluelock.com</email>
+        </developer>
+        <developer>
           <id>robSnyder</id>
           <name>Rob Snyder</name>
           <email>rsnyder@bluelock.com</email>
