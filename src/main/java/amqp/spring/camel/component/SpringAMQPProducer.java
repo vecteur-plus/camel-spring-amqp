@@ -52,7 +52,7 @@ public class SpringAMQPProducer extends DefaultAsyncProducer implements ServiceP
     
     @Override
     public void process(Exchange exchange) throws Exception {
-        if(! isRunAllowed() && exchange.getException() == null) {
+        if(!isRunAllowed() && exchange.getException() == null) {
             exchange.setException(new RejectedExecutionException("SpringAMQPProducer not started yet!"));
         }
         

@@ -78,7 +78,7 @@ public class SpringAMQPConsumer extends DefaultConsumer implements ConnectionLis
     
     protected static Map<String, Object> parseKeyValues(String routingKey) {
         StringTokenizer tokenizer = new StringTokenizer(routingKey, "&|");
-        Map<String, Object> pairs = new HashMap<String, Object>();
+        Map<String, Object> pairs = new HashMap<>();
         while(tokenizer.hasMoreTokens()) {
             String token = tokenizer.nextToken();
             String[] keyValue = token.split("=");
@@ -357,7 +357,7 @@ public class SpringAMQPConsumer extends DefaultConsumer implements ConnectionLis
 
         protected Queue declareQueue() {
             //Determine queue arguments, including vendor extensions
-            Map<String, Object> queueArguments = new HashMap<String, Object>();
+            Map<String, Object> queueArguments = new HashMap<>();
             if(endpoint.getTimeToLive() != null)
                 queueArguments.put(TTL_QUEUE_ARGUMENT, endpoint.getTimeToLive());
             if(endpoint.isHa() )

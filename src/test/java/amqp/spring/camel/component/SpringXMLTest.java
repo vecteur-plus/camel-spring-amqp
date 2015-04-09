@@ -52,7 +52,7 @@ public class SpringXMLTest {
         testTwo.expectedMessageCount(1);
         testTwo.expectedBodiesReceived("HELLO HEADERS");
         
-        Map<String, Object> headers = new HashMap<String, Object>();
+        Map<String, Object> headers = new HashMap<>();
         headers.put("key1", "value1");
         headers.put("key2", "value2");
         

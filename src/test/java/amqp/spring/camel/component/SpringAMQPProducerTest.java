@@ -97,7 +97,7 @@ public class SpringAMQPProducerTest extends CamelTestSupport {
         RabbitTemplate amqpTemplate = new RabbitTemplate(factory);
         SpringAMQPComponent amqpComponent = new SpringAMQPComponent(factory);
         
-        Map<String, AmqpTemplate> templateMap = new HashMap<String, AmqpTemplate>(1);
+        Map<String, AmqpTemplate> templateMap = new HashMap<>(1);
         templateMap.put(SpringAMQPComponent.DEFAULT_CONNECTION, amqpTemplate);
         amqpComponent.setAmqpTemplate(templateMap);
         

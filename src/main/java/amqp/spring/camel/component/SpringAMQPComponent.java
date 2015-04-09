@@ -52,7 +52,7 @@ public class SpringAMQPComponent extends DefaultComponent {
     }
 
     public SpringAMQPComponent(ConnectionFactory connectionFactory) {
-        this.connectionFactory = new HashMap<String, ConnectionFactory>();
+        this.connectionFactory = new HashMap<>();
         this.connectionFactory.put(DEFAULT_CONNECTION, connectionFactory);
     }
 
@@ -80,7 +80,7 @@ public class SpringAMQPComponent extends DefaultComponent {
     public Map<String, AmqpAdmin> getAmqpAdministration() {
         if(this.amqpAdministration == null && getCamelContext() != null && getCamelContext().getRegistry() != null) {
             //Attempt to load an administration connection from the registry
-            this.amqpAdministration = new HashMap<String, AmqpAdmin>();
+            this.amqpAdministration = new HashMap<>();
             Map<String, AmqpAdmin> adminMap = getCamelContext().getRegistry().findByTypeWithName(AmqpAdmin.class);
             for(AmqpAdmin admin : adminMap.values()){
                 CachingConnectionFactory adminConnection = (CachingConnectionFactory)((RabbitAdmin)admin).getRabbitTemplate().getConnectionFactory();
@@ -98,7 +98,7 @@ public class SpringAMQPComponent extends DefaultComponent {
         
         if(this.amqpAdministration == null || this.amqpAdministration.isEmpty()) {
             //Attempt to construct an AMQP Adminstration instance
-            this.amqpAdministration = new HashMap<String, AmqpAdmin>();
+            this.amqpAdministration = new HashMap<>();
             this.amqpAdministration.put(DEFAULT_CONNECTION, new RabbitAdmin(this.connectionFactory.values().iterator().next()));
             LOG.info("Created new AMQP Administration instance");
         }
@@ -113,7 +113,7 @@ public class SpringAMQPComponent extends DefaultComponent {
     public Map<String, AmqpTemplate> getAmqpTemplate() {
         if(this.amqpTemplate == null && getCamelContext() != null && getCamelContext().getRegistry() != null) {
             //Attempt to load an AMQP template from the registry
-            this.amqpTemplate = new HashMap<String, AmqpTemplate>();
+            this.amqpTemplate = new HashMap<>();
             Map<String, AmqpTemplate> templateMap = getCamelContext().getRegistry().findByTypeWithName(AmqpTemplate.class);
             for(AmqpTemplate template : templateMap.values()){
                 CachingConnectionFactory adminConnection = (CachingConnectionFactory)((RabbitTemplate) template).getConnectionFactory();
@@ -131,7 +131,7 @@ public class SpringAMQPComponent extends DefaultComponent {
         
         if(this.amqpTemplate == null || this.amqpTemplate.isEmpty()) {
             //Attempt to construct an AMQP template
-            this.amqpTemplate = new HashMap<String, AmqpTemplate>();
+            this.amqpTemplate = new HashMap<>();
             this.amqpTemplate.put(DEFAULT_CONNECTION, new RabbitTemplate(this.connectionFactory.values().iterator().next()));
             LOG.info("Created new AMQP Template");
         }

@@ -73,10 +73,7 @@ public class ContentTypeConverterFactoryTest {
                 return false;
             }
             final TestObject other = (TestObject) obj;
-            if ((this.value == null) ? (other.value != null) : !this.value.equals(other.value)) {
-                return false;
-            }
-            return true;
+            return this.value == null ? other.value == null : this.value.equals(other.value);
         }
 
         @Override

@@ -22,7 +22,7 @@ public class ContentTypeConverterFactory extends AbstractMessageConverter {
     protected MessageConverter fallbackConverter = null;
 
     public ContentTypeConverterFactory() {
-        this.converters = new HashMap<String, MessageConverter>();
+        this.converters = new HashMap<>();
     }
     
     public Map<String, MessageConverter> getConverters() {

@@ -92,7 +92,7 @@ public class SpringAMQPConsumerTest extends CamelTestSupport {
         MockEndpoint mockEndpointOne = getMockEndpoint("mock:test.b");
         mockEndpointOne.expectedMessageCount(1);
         
-        Map<String, Object> headersOne = new HashMap<String, Object>();
+        Map<String, Object> headersOne = new HashMap<>();
         headersOne.put("cheese", "asiago");
         headersOne.put("fromage", "cheddar");
         context().createProducerTemplate().sendBodyAndHeaders("spring-amqp:headerAndExchange?type=headers", "testHeaderExchange", headersOne);
@@ -100,7 +100,7 @@ public class SpringAMQPConsumerTest extends CamelTestSupport {
         MockEndpoint mockEndpointTwo = context().getEndpoint("mock:test.c", MockEndpoint.class);
         mockEndpointTwo.expectedMessageCount(1);
         
-        Map<String, Object> headersTwo = new HashMap<String, Object>();
+        Map<String, Object> headersTwo = new HashMap<>();
         headersTwo.put("cheese", "gouda");
         headersTwo.put("fromage", "jack");
         context().createProducerTemplate().sendBodyAndHeaders("spring-amqp:headerAndExchange?type=headers", "testHeaderExchange", headersTwo);
@@ -114,12 +114,12 @@ public class SpringAMQPConsumerTest extends CamelTestSupport {
         MockEndpoint mockEndpointOne = getMockEndpoint("mock:test.d");
         mockEndpointOne.expectedMessageCount(2);
         
-        Map<String, Object> headersOne = new HashMap<String, Object>();
+        Map<String, Object> headersOne = new HashMap<>();
         headersOne.put("cheese", "asiago");
         headersOne.put("fromage", "bleu");
         context().createProducerTemplate().sendBodyAndHeaders("spring-amqp:headerOrExchange?type=headers", "testHeaderExchange", headersOne);
         
-        Map<String, Object> headersTwo = new HashMap<String, Object>();
+        Map<String, Object> headersTwo = new HashMap<>();
         headersTwo.put("cheese", "white");
         headersTwo.put("fromage", "jack");
         context().createProducerTemplate().sendBodyAndHeaders("spring-amqp:headerOrExchange?type=headers", "testHeaderExchange", headersTwo);
@@ -195,7 +195,7 @@ public class SpringAMQPConsumerTest extends CamelTestSupport {
         amqpTemplate.setMessageConverter(new JsonMessageConverter());
         SpringAMQPComponent amqpComponent = new SpringAMQPComponent(factory);
         
-        Map<String, AmqpTemplate> templateMap = new HashMap<String, AmqpTemplate>(1);
+        Map<String, AmqpTemplate> templateMap = new HashMap<>(1);
         templateMap.put(SpringAMQPComponent.DEFAULT_CONNECTION, amqpTemplate);
         amqpComponent.setAmqpTemplate(templateMap);
         

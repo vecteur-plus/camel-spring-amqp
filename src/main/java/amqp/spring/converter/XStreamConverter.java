@@ -54,7 +54,7 @@ public class XStreamConverter extends AbstractMessageConverter {
     }
 
     @Override
-    protected Message createMessage(Object object, MessageProperties messageProperties) {
+    protected Message createMessage(Object object, MessageProperties messageProperties) throws MessageConversionException {
         try {
             byte[] body = null;
             if(object != null) {
@@ -62,12 +62,13 @@ public class XStreamConverter extends AbstractMessageConverter {
                 StaxWriter writer = new StaxWriter(new QNameMap(), this.outputFactory.createXMLStreamWriter(outStream));
                 this.objectMapper.marshal(object, writer);
                 body = outStream.toByteArray();
+                
+                classMapper.fromClass(object.getClass(), messageProperties);
             }
             
             messageProperties.setContentType(MessageProperties.CONTENT_TYPE_JSON);
             messageProperties.setContentEncoding(this.encoding);
             messageProperties.setContentLength(body != null ? body.length : 0);
-            classMapper.fromClass(object.getClass(), messageProperties);
             return new Message(body, messageProperties);
         } catch (XMLStreamException ex) {
             String typeId = (String) messageProperties.getHeaders().get(DefaultClassMapper.DEFAULT_CLASSID_FIELD_NAME);

@@ -39,7 +39,7 @@ public class ContrivedLoadTest {
         final int messageCount = 1000;
         int received = 0;
         ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(messageCount);
-        List<Future<String>> futures = new ArrayList<Future<String>>();
+        List<Future<String>> futures = new ArrayList<>();
         long startTime = System.currentTimeMillis();
         for(int i=0; i < messageCount; ++i)
             futures.add(executorService.submit(new SynchronousRequestor(this.template)));
@@ -65,7 +65,7 @@ public class ContrivedLoadTest {
     public void testAsynchronous() throws Exception {
         final int messageCount = 1000;
         int received = 0;
-        List<Future<String>> futures = new ArrayList<Future<String>>();
+        List<Future<String>> futures = new ArrayList<>();
         
         long startTime = System.currentTimeMillis();
         for(int i=0; i < messageCount; ++i)
