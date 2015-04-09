@@ -154,7 +154,6 @@ public class SpringAMQPConsumer extends DefaultConsumer implements ConnectionLis
         
         public void shutdown() {
             this.listenerContainer.shutdown();
-            this.listenerContainer.destroy();
         }
 
         public final ErrorHandler getErrorHandler() {
