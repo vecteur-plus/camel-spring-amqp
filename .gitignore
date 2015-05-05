@@ -10,3 +10,4 @@ Thumbs.db
 *.iml
 .idea
 nbactions.xml
+nb-configuration.xml
