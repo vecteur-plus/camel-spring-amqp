@@ -13,7 +13,7 @@ import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.JsonMessageConverter;
 
@@ -189,7 +189,7 @@ public class SpringAMQPConsumerTest extends CamelTestSupport {
 
     @Override
     protected CamelContext createCamelContext() throws Exception {
-        CachingConnectionFactory factory = new CachingConnectionFactory();
+        ConnectionFactory factory = new TestConnectionFactory();
         RabbitTemplate amqpTemplate = new RabbitTemplate(factory);
         //The JSON converter stresses marshalling more than the default converter
         amqpTemplate.setMessageConverter(new JsonMessageConverter());

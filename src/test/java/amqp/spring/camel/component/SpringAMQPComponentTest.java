@@ -8,7 +8,6 @@ import org.apache.camel.Component;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 
 public class SpringAMQPComponentTest extends CamelTestSupport {
@@ -29,8 +28,7 @@ public class SpringAMQPComponentTest extends CamelTestSupport {
     
     @Override
     protected CamelContext createCamelContext() throws Exception {
-        ConnectionFactory factory = new CachingConnectionFactory();
-        
+        ConnectionFactory factory = new TestConnectionFactory();
         CamelContext camelContext = super.createCamelContext();
         camelContext.addComponent("spring-amqp", new SpringAMQPComponent(factory));
         return camelContext;

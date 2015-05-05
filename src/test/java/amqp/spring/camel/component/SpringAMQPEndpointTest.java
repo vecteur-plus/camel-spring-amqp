@@ -7,7 +7,6 @@ import org.apache.camel.*;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -103,8 +102,7 @@ public class SpringAMQPEndpointTest extends CamelTestSupport {
         
     @Override
     protected CamelContext createCamelContext() throws Exception {
-        ConnectionFactory factory = new CachingConnectionFactory();
-        
+        ConnectionFactory factory = new TestConnectionFactory();
         CamelContext camelContext = super.createCamelContext();
         camelContext.addComponent("spring-amqp", new SpringAMQPComponent(factory));
         return camelContext;
