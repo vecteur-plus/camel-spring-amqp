@@ -48,7 +48,11 @@ public class ContrivedLoadTest {
         startTime = System.currentTimeMillis();
         for(Future<String> future : futures) {
             String response = future.get();
-            if ("RESPONSE".equals(response)) ++received;
+            if ("RESPONSE".equals(response)) {
+                ++received;
+            } else {
+                LOG.warn("Unexpected response '{}'", response);
+            }
         }
         float elapsedTime = (System.currentTimeMillis() - startTime) / 1000.0f;
         int maxPoolSize = this.camelContext.getExecutorServiceManager().getDefaultThreadPoolProfile().getMaxPoolSize();
@@ -75,7 +79,11 @@ public class ContrivedLoadTest {
         startTime = System.currentTimeMillis();
         for(Future<String> future : futures) {
             String response = future.get(10000, TimeUnit.MILLISECONDS);
-            if("RESPONSE".equals(response)) ++received;
+            if("RESPONSE".equals(response)) {
+                ++received;
+            } else {
+                LOG.warn("Unexpected response '{}'", response);
+            }
         }
         float elapsedTime = (System.currentTimeMillis() - startTime) / 1000.0f;
         int maxPoolSize = this.camelContext.getExecutorServiceManager().getDefaultThreadPoolProfile().getMaxPoolSize();
