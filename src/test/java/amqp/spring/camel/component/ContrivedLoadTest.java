@@ -33,12 +33,12 @@ public class ContrivedLoadTest {
     protected ProducerTemplate template;
     @Resource
     protected CamelContext camelContext;
-
+    
     @Test
     public void testSynchronous() throws Exception {
         final int messageCount = 1000;
         int received = 0;
-        ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(messageCount);
+        ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(100);
         List<Future<String>> futures = new ArrayList<>();
         long startTime = System.currentTimeMillis();
         for(int i=0; i < messageCount; ++i)
@@ -78,7 +78,7 @@ public class ContrivedLoadTest {
 
         startTime = System.currentTimeMillis();
         for(Future<String> future : futures) {
-            String response = future.get(10000, TimeUnit.MILLISECONDS);
+            String response = future.get(10, TimeUnit.SECONDS);
             if("RESPONSE".equals(response)) {
                 ++received;
             } else {
