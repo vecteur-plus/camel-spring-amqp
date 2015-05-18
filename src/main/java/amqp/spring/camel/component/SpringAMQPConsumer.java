@@ -337,7 +337,7 @@ public class SpringAMQPConsumer extends DefaultConsumer implements ConnectionLis
         protected org.springframework.amqp.core.Exchange declareExchange() {
             org.springframework.amqp.core.Exchange exchange = this.endpoint.createAMQPExchange();
             if (this.endpoint.isUsingDefaultExchange()) {
-                LOG.info("Using default exchange; will not declare one for endpoint {}.", endpoint);
+                LOG.debug("Using the default exchange; will not declare one for endpoint {}.", endpoint);
             } else {
                 try {
                     this.endpoint.amqpAdministration.declareExchange(exchange);
@@ -397,7 +397,7 @@ public class SpringAMQPConsumer extends DefaultConsumer implements ConnectionLis
             }
 
             if (this.endpoint.isUsingDefaultExchange()) {
-                LOG.info("Using default exchange for endpoint {}.  Default exchange is implicitly bound to every queue, with a routing key equal to the queue name.", endpoint);
+                LOG.debug("Using the default exchange for endpoint {}. Default exchange is implicitly bound to every queue, with a routing key equal to the queue name.", endpoint);
             } else if (binding != null) {
                 LOG.info("Declaring binding {} for endpoint {}.", binding.getRoutingKey(), endpoint);
                 this.endpoint.getAmqpAdministration().declareBinding(binding);

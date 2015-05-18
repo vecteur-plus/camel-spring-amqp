@@ -67,7 +67,7 @@ public class SpringAMQPProducer extends DefaultAsyncProducer implements ServiceP
         if (this.endpoint.isCreateResources()) {
             org.springframework.amqp.core.Exchange exchange = this.endpoint.createAMQPExchange();
             if (this.endpoint.isUsingDefaultExchange()) {
-                LOG.info("Using default exchange of type {}", exchange.getClass().getSimpleName());
+                LOG.debug("Using the default exchange");
             } else {
                 LOG.info("Declaring exchange {} of type {}", exchange.getName(), exchange.getClass().getSimpleName());
                 try {
