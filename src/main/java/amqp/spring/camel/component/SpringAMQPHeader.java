@@ -15,6 +15,7 @@ public class SpringAMQPHeader {
     public static final String PRIORITY = "priority";
     public static final String MESSAGE_ID = "messageId";
     public static final String CORRELATION_ID = "correlationId";
+    public static final String APP_ID = "appId";
     public static final String REPLY_TO = "replyTo";
     public static final String EXPIRATION = "expiration";
     public static final String DELIVERY_MODE = "deliveryMode";
@@ -40,6 +41,9 @@ public class SpringAMQPHeader {
                     case CORRELATION_ID:
                         byte[] correlationId = headerValueString != null ? headerValueString.getBytes() : null;
                         msg.getMessageProperties().setCorrelationId(correlationId);
+                        break;
+                    case APP_ID:
+                        msg.getMessageProperties().setAppId(headerValueString);
                         break;
                     case EXPIRATION:
                         msg.getMessageProperties().setExpiration(headerValueString);
@@ -68,6 +72,7 @@ public class SpringAMQPHeader {
         msg.getHeaders().put(MESSAGE_ID, amqpMessage.getMessageProperties().getMessageId());
         byte[] correlationId = amqpMessage.getMessageProperties().getCorrelationId();
         msg.getHeaders().put(CORRELATION_ID, correlationId == null ? null : new String(correlationId));
+        msg.getHeaders().put(APP_ID, amqpMessage.getMessageProperties().getAppId());
         msg.getHeaders().put(CONTENT_ENCODING, amqpMessage.getMessageProperties().getContentEncoding());
         msg.getHeaders().put(CONTENT_TYPE, amqpMessage.getMessageProperties().getContentType());
         msg.getHeaders().put(EXPIRATION, amqpMessage.getMessageProperties().getExpiration());
@@ -87,6 +92,7 @@ public class SpringAMQPHeader {
                     !CONTENT_TYPE.equals(headerEntry.getKey()) &&
                     !MESSAGE_ID.equals(headerEntry.getKey()) &&
                     !CORRELATION_ID.equals(headerEntry.getKey()) &&
+                    !APP_ID.equals(headerEntry.getKey()) &&
                     !EXPIRATION.equals(headerEntry.getKey()) &&
                     !PRIORITY.equals(headerEntry.getKey()) &&
                     !REPLY_TO.equals(headerEntry.getKey()) &&

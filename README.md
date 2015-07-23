@@ -143,7 +143,7 @@ the binaries into the local repository. Then you can include this component with
 	<dependency>
 	    <groupId>cz.drasil</groupId>
 	    <artifactId>camel-spring-amqp</artifactId>
-	    <version>1.4.1</version>
+	    <version>1.4.2</version>
 	</dependency>
 
 ## Limitations
