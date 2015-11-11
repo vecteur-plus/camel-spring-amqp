@@ -78,7 +78,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <org.apache.camel.version>2.15.3</org.apache.camel.version>
+        <org.apache.camel.version>2.16.0</org.apache.camel.version>
         <org.springframework.amqp.version>1.4.6.RELEASE</org.springframework.amqp.version>
         <org.springframework.retry.version>1.1.2.RELEASE</org.springframework.retry.version>
         <!-- Keep this in line with the versions referenced by Camel and Spring-AMQP versions in use (4.1.6 and 4.1.7) -->
