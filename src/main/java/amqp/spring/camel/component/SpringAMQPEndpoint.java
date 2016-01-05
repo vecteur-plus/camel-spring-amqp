@@ -4,7 +4,10 @@
 
 package amqp.spring.camel.component;
 
-import org.apache.camel.*;
+import org.apache.camel.Component;
+import org.apache.camel.Consumer;
+import org.apache.camel.Processor;
+import org.apache.camel.Producer;
 import org.apache.camel.impl.DefaultEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +19,7 @@ import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.HeadersExchange;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.util.StringUtils;
 
 /**
  * RabbitMQ Consumer URIs are in the format of:<br>
@@ -29,18 +33,21 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
  * And the ROUTING_KEY header could be set to the appropriate routing key.
  */
 public class SpringAMQPEndpoint extends DefaultEndpoint {
+
     private static transient final Logger LOG = LoggerFactory.getLogger(SpringAMQPEndpoint.class);
-    
+
     private static final String DEFAULT_EXCHANGE_NAME = "";
-    
+
     protected AmqpAdmin amqpAdministration;
     private AmqpTemplate amqpTemplate;
-            
+
     private String connection;
     private String exchangeName;
     private String queueName;
     private String routingKey;
     private String exchangeType;
+    private String dlxName;
+    private String dlqName;
     private boolean durable = false;
     private boolean exclusive = false;
     private boolean autodelete = true;
@@ -52,67 +59,69 @@ public class SpringAMQPEndpoint extends DefaultEndpoint {
     private Integer timeToLive = null;
     private AcknowledgeMode acknowledgeMode = AcknowledgeMode.NONE;
     private boolean createResources = true;
-    
+
     //The second and third parameters to the URI can be interchangable based on the context.
     //Place them here until we determine if we're a consumer or producer.
     private String tempQueueOrKey;
-    
-    public SpringAMQPEndpoint(Component component, String uri, String remaining, AmqpTemplate template, AmqpAdmin admin) {
+
+    public SpringAMQPEndpoint(final Component component, final String uri, final String remaining, final AmqpTemplate template, final AmqpAdmin admin) {
         super(uri, component);
-        
+
         LOG.info("Creating endpoint for {}", remaining);
         this.amqpAdministration = admin;
         this.amqpTemplate = template;
-        
+
         String[] tokens = remaining.split(":");
-        
+
         //Per spec expected default is empty string
-        this.exchangeName = tokens.length == 0 || tokens[0] == null ? "" : tokens[0]; 
+        this.exchangeName = tokens.length == 0 || tokens[0] == null ? "" : tokens[0];
         //Consumers must specify exchange, queue and routing key in that order
-        if(tokens.length > 2) { 
+        if (tokens.length > 2) {
             this.queueName = tokens[1];
             this.routingKey = tokens[2];
-        //We have only 2 parameters. Is this a routing key or a queue? We don't know yet.
-        } else if(tokens.length == 2) {
+            //We have only 2 parameters. Is this a routing key or a queue? We don't know yet.
+        }
+        else if (tokens.length == 2) {
             this.tempQueueOrKey = tokens[1];
-        //We only have the exchange name - that's it. This must be a fanout producer.
-        } else {
+            //We only have the exchange name - that's it. This must be a fanout producer.
+        }
+        else {
             this.exchangeType = "fanout";
         }
     }
 
     @Override
     public Producer createProducer() throws Exception {
-        if(this.exchangeName == null)
+        if (this.exchangeName == null)
             throw new IllegalStateException("Cannot have null exchange name");
-        
+
         //Aha! We're a producer, so the second argument was a routing key.
-        if(this.tempQueueOrKey != null) {
+        if (this.tempQueueOrKey != null) {
             this.routingKey = this.tempQueueOrKey;
             this.tempQueueOrKey = null;
         }
-        
+
         return new SpringAMQPProducer(this);
     }
 
     @Override
-    public Consumer createConsumer(Processor processor) throws Exception {
-        if(this.exchangeName == null)
+    public Consumer createConsumer(final Processor processor) throws Exception {
+        if (this.exchangeName == null)
             throw new IllegalStateException("Cannot have null exchange name");
 
         //Aha! We're a consumer, so the second argument was a queue name. This is a fanout exchange.
-        if(this.tempQueueOrKey != null) {
+        if (this.tempQueueOrKey != null) {
             this.queueName = this.tempQueueOrKey;
             this.tempQueueOrKey = null;
-            if(this.exchangeType == null)
+            if (this.exchangeType == null)
                 this.exchangeType = "fanout";
         }
-        
-        if(this.queueName == null)
-            throw new IllegalStateException("Cannot have null queue name for "+getEndpointUri());
-        
+
+        if (this.queueName == null)
+            throw new IllegalStateException("Cannot have null queue name for " + getEndpointUri());
+
         SpringAMQPConsumer consumer = new SpringAMQPConsumer(this, processor);
-        if(getAmqpTemplate() != null)
+        if (getAmqpTemplate() != null)
             ((RabbitTemplate) getAmqpTemplate()).getConnectionFactory().addConnectionListener(consumer);
         return consumer;
     }
@@ -121,7 +130,7 @@ public class SpringAMQPEndpoint extends DefaultEndpoint {
         return amqpAdministration;
     }
 
-    public void setAmqpAdministration(AmqpAdmin amqpAdministration) {
+    public void setAmqpAdministration(final AmqpAdmin amqpAdministration) {
         this.amqpAdministration = amqpAdministration;
     }
 
@@ -129,7 +138,7 @@ public class SpringAMQPEndpoint extends DefaultEndpoint {
         return amqpTemplate;
     }
 
-    public void setAmqpTemplate(AmqpTemplate amqpTemplate) {
+    public void setAmqpTemplate(final AmqpTemplate amqpTemplate) {
         this.amqpTemplate = amqpTemplate;
     }
 
@@ -137,7 +146,7 @@ public class SpringAMQPEndpoint extends DefaultEndpoint {
         return prefetchCount;
     }
 
-    public void setPrefetchCount(int prefetchCount) {
+    public void setPrefetchCount(final int prefetchCount) {
         this.prefetchCount = prefetchCount;
     }
 
@@ -145,7 +154,7 @@ public class SpringAMQPEndpoint extends DefaultEndpoint {
         return concurrentConsumers;
     }
 
-    public void setConcurrentConsumers(int concurrentConsumers) {
+    public void setConcurrentConsumers(final int concurrentConsumers) {
         this.concurrentConsumers = concurrentConsumers;
     }
 
@@ -153,7 +162,7 @@ public class SpringAMQPEndpoint extends DefaultEndpoint {
         return transactional;
     }
 
-    public void setTransactional(boolean transactional) {
+    public void setTransactional(final boolean transactional) {
         this.transactional = transactional;
     }
 
@@ -161,15 +170,15 @@ public class SpringAMQPEndpoint extends DefaultEndpoint {
         return ha;
     }
 
-    public void setHa(boolean ha) {
+    public void setHa(final boolean ha) {
         this.ha = ha;
     }
-    
+
     public boolean isAutoReply() {
         return autoReply;
     }
 
-    public void setAutoReply(boolean autoReply) {
+    public void setAutoReply(final boolean autoReply) {
         this.autoReply = autoReply;
     }
 
@@ -177,7 +186,7 @@ public class SpringAMQPEndpoint extends DefaultEndpoint {
         return connection;
     }
 
-    public void setConnection(String connection) {
+    public void setConnection(final String connection) {
         this.connection = connection;
     }
 
@@ -185,10 +194,10 @@ public class SpringAMQPEndpoint extends DefaultEndpoint {
         return exchangeName;
     }
 
-    public void setExchangeName(String exchangeName) {
+    public void setExchangeName(final String exchangeName) {
         this.exchangeName = exchangeName;
     }
-    
+
     public boolean isUsingDefaultExchange() {
         return DEFAULT_EXCHANGE_NAME.equals(this.exchangeName);
     }
@@ -197,7 +206,7 @@ public class SpringAMQPEndpoint extends DefaultEndpoint {
         return queueName;
     }
 
-    public void setQueueName(String queueName) {
+    public void setQueueName(final String queueName) {
         this.queueName = queueName;
     }
 
@@ -205,7 +214,7 @@ public class SpringAMQPEndpoint extends DefaultEndpoint {
         return routingKey;
     }
 
-    public void setRoutingKey(String routingKey) {
+    public void setRoutingKey(final String routingKey) {
         this.routingKey = routingKey;
     }
 
@@ -213,11 +222,11 @@ public class SpringAMQPEndpoint extends DefaultEndpoint {
         return autodelete;
     }
 
-    public void setAutodelete(boolean autodelete) {
+    public void setAutodelete(final boolean autodelete) {
         this.autodelete = autodelete;
     }
 
-    public void setAcknowledgeMode(String acknowledgeMode) {
+    public void setAcknowledgeMode(final String acknowledgeMode) {
         this.acknowledgeMode = AcknowledgeMode.valueOf(acknowledgeMode.toUpperCase());
     }
 
@@ -229,7 +238,7 @@ public class SpringAMQPEndpoint extends DefaultEndpoint {
         return durable;
     }
 
-    public void setDurable(boolean durable) {
+    public void setDurable(final boolean durable) {
         this.durable = durable;
     }
 
@@ -237,7 +246,7 @@ public class SpringAMQPEndpoint extends DefaultEndpoint {
         return exchangeType;
     }
 
-    public void setType(String exchangeType) {
+    public void setType(final String exchangeType) {
         this.exchangeType = exchangeType;
     }
 
@@ -245,7 +254,7 @@ public class SpringAMQPEndpoint extends DefaultEndpoint {
         return exclusive;
     }
 
-    public void setExclusive(boolean exclusive) {
+    public void setExclusive(final boolean exclusive) {
         this.exclusive = exclusive;
     }
 
@@ -253,16 +262,36 @@ public class SpringAMQPEndpoint extends DefaultEndpoint {
         return timeToLive;
     }
 
-    public void setTimeToLive(Integer timeToLive) {
+    public void setTimeToLive(final Integer timeToLive) {
         this.timeToLive = timeToLive;
     }
-    
+
     public boolean isCreateResources() {
         return createResources;
     }
 
-    public void setCreateResources(boolean createResources) {
+    public void setCreateResources(final boolean createResources) {
         this.createResources = createResources;
+    }
+
+    public String getDlxName() {
+        return dlxName;
+    }
+
+    public void setDlxName(final String dlxName) {
+        this.dlxName = dlxName;
+    }
+
+    public String getDlqName() {
+        return dlqName;
+    }
+
+    public void setDlqName(final String dlqName) {
+        this.dlqName = dlqName;
+    }
+
+    public boolean hasDlxName() {
+        return !StringUtils.isEmpty(this.dlxName);
     }
 
     @Override
@@ -273,9 +302,9 @@ public class SpringAMQPEndpoint extends DefaultEndpoint {
     @Override
     protected String createEndpointUri() {
         StringBuilder builder = new StringBuilder("spring-amqp:").append(this.exchangeName);
-        if(this.queueName != null)
+        if (this.queueName != null)
             builder.append(":").append(this.queueName);
-        if(this.routingKey != null)
+        if (this.routingKey != null)
             builder.append(":").append(this.routingKey);
         builder.append("?").append("type=").append(this.exchangeType);
         builder.append("&autodelete=").append(this.autodelete);
@@ -283,27 +312,34 @@ public class SpringAMQPEndpoint extends DefaultEndpoint {
         builder.append("&durable=").append(this.durable);
         builder.append("&exclusive=").append(this.exclusive);
         builder.append("&transactional=").append(this.transactional);
-        if ( this.ha )
-        	builder.append("&x-ha-policy=all");
+        if (this.ha)
+            builder.append("&x-ha-policy=all");
+        if (hasDlxName())
+            builder.append("&x-dead-letter-exchange=").append(this.dlxName);
         builder.append("&autoReply=").append(this.autoReply);
         builder.append("&createResources=").append(this.createResources);
-        
-        return builder.toString();        
+
+        return builder.toString();
     }
-    
+
     org.springframework.amqp.core.Exchange createAMQPExchange() {
-        if("direct".equals(this.exchangeType)) {
+        if ("direct".equals(this.exchangeType)) {
             return new DirectExchange(this.exchangeName, this.durable, this.autodelete);
-        } else if("fanout".equals(this.exchangeType)) {
+        }
+        else if ("fanout".equals(this.exchangeType)) {
             return new FanoutExchange(this.exchangeName, this.durable, this.autodelete);
-        } else if("headers".equals(this.exchangeType)) {
+        }
+        else if ("headers".equals(this.exchangeType)) {
             return new HeadersExchange(this.exchangeName, this.durable, this.autodelete);
-        } else if("topic".equals(this.exchangeType)) {
+        }
+        else if ("topic".equals(this.exchangeType)) {
             return new TopicExchange(this.exchangeName, this.durable, this.autodelete);
-        //We have a routing key but no explicit exchange type, assume topic exchange
-        } else if(this.routingKey != null) { 
+            //We have a routing key but no explicit exchange type, assume topic exchange
+        }
+        else if (this.routingKey != null) {
             return new TopicExchange(this.exchangeName, this.durable, this.autodelete);
-        } else {
+        }
+        else {
             return new DirectExchange(this.exchangeName, this.durable, this.autodelete);
         }
     }
