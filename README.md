@@ -92,6 +92,14 @@ Parameters available include:
         <td>createResources</td>
         <td>Setting this parameter to false prevents producers and consumers from creating the AMQP resources (queues, exchanges and binding) they are using. Defaults to true.</td>
     </tr>
+    <tr>
+        <td>dlxName</td>
+        <td>Name of the Dead Letter Exchange to be used for a given endpoint wille be automatically declare on demand if createResources is set to true will be ignored otherwise</td>
+    </tr>
+    <tr>
+        <td>dlqName</td>
+        <td>Name of the Dead Letter Queue to be used for a given endpoint wille be automatically declare on demand if createResources is set to true and dlxName is set will be ignored otherwise</td>
+    </tr>
 </table>
 
 ## Spring Integration
@@ -141,7 +149,7 @@ You need to download sources here and run 'mvn install -Dmaven.test.skip=true' t
 the binaries into the local repository. Then you can include this component within your Maven POM as:
 
 	<dependency>
-	    <groupId>cz.drasil</groupId>
+	    <groupId>com.vecteurplus</groupId>
 	    <artifactId>camel-spring-amqp</artifactId>
 	    <version>1.5.1</version>
 	</dependency>
